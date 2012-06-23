@@ -4,6 +4,17 @@
 \setcounter{secnumdepth}{2}
 \setcounter{tocdepth}{2}
 
+\usepackage{xcolor}
+\usepackage{framed}
+
+\newenvironment{myfancybox}{%
+  \def\FrameCommand{\fboxsep=\FrameSep \fcolorbox{blue01}{honeydew}}%
+  \color{black}\MakeFramed {\FrameRestore}}%
+ {\endMakeFramed}
+
+\setlength{\parskip}{2.5mm}
+\setlength{\parindent}{0.0mm}
+
 \begin{document}
 
 \setcounter{page}{1}
@@ -31,33 +42,80 @@
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 \chapter{Introduction to Openquake}
+\begin{myfancybox}
+The objectives of this chapter are:
+\begin{itemize}
+    \item aa
+    \item bb
+\end{itemize}
+\end{myfancybox}
+% -----------------------------------------------------------------------------
 \section{Source typologies}
+% -----------------------------------------------------------------------------
 \section{Calculation workflows}
 \cleardoublepage
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 \chapter{Using Openquake}
+\begin{myfancybox}
+The objectives of this chapter are:
+\begin{itemize}
+    \item aa
+    \item bb
+\end{itemize}
+\end{myfancybox}
+% -----------------------------------------------------------------------------
 \section{Structure of an input model}
+% -----------------------------------------------------------------------------
 \section{Openquake demos}
 \cleardoublepage
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 \chapter{Sub-saharan Africa demo}
+\begin{myfancybox}
+The objectives of this chapter are:
+\begin{itemize}
+    \item Understand the basic input and output file structure
+    \item Learn how to compute hazard curves and hazard maps
+\end{itemize}
+\end{myfancybox}
+
+\section{Model description}
 The model used for this demo correponds to the model proposed by 
 \citet{midzi1999} in the context of the GSHAP project.
-\section{Model description}
+
 This seismic source model contains 21 area sources distributed within a wide 
 band that goes from the Red Sea until South Africa.
+
 \section{Assignment: hazard calculation using the demo model}
+The first assignment focuses on the calculation of hazard for a small area 
+using Openquake and demo model provided.
+
 \subsection{Analysis of results}
 \cleardoublepage
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 \chapter{Openquake-Modeller}
+\begin{myfancybox}
+The objectives of this chapter are:
+\begin{itemize}
+    \item aa
+    \item bb
+\end{itemize}
+\end{myfancybox}
 \cleardoublepage
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 \chapter{Improving the Sub-Saharan Africa demo model}
+\begin{myfancybox}
+The objectives of this chapter are:
+\begin{itemize}
+    \item aa
+    \item bb
+\end{itemize}
+\end{myfancybox}
 \section{Catalogue processing}
 \section{Calculation of activity rates}
 \section{Assignment: Preparation of an updated OQ input demo model}

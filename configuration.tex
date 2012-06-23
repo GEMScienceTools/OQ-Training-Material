@@ -43,9 +43,6 @@
 \renewcommand{\seriesdefault}{m}
 \renewcommand{\shapedefault}{up}
 
-\setlength{\parskip}{5.0mm}
-\setlength{\parindent}{0.0in}
-
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 \usepackage{amsmath}
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,6 +50,7 @@
 \usepackage[dvips]{graphicx}
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 \usepackage{type1cm,eso-pic,color}
+
 %\makeatletter
 %\AddToShipoutPicture{
 %    \setlength{\@tempdimb}{.5\paperwidth}
@@ -68,6 +66,7 @@
 %	}
 %}
 %\makeatother
+
 %
 % Solves problems with margin notes
 \usepackage{mparhack} 
@@ -77,6 +76,8 @@
 	\footnotesize #1]%
 	{\raggedright\footnotesize #1}}
 % Define some colors
+	\definecolor{azure}{RGB}{240,255,255}
+	\definecolor{honeydew}{RGB}{240,255,240}
 	\definecolor{blue01}{RGB}{4,64,116}
 	\definecolor{blue02}{RGB}{0,62,113}
 	\definecolor{gray01}{rgb}{0.1,0.1,0.1}
