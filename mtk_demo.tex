@@ -16,14 +16,13 @@ To run the Modeller's Toolkit simply move into the directory in which the \verb=
 
 The \verb=-d= indicates that the program can be run in ''debug'' mode. This will create a log (written automatically to the file \verb=debug.log=) of the processes that are executed inside the toolkit in addition to certain parameters that may be calculated at intermediate steps of the process, but are not written to the output. The \verb=-d= can be omitted if preferred, in which case the program will return only a minimal indication of the progress to the command prompt.
 
-
 \subsection{The Configuration File}
 
 The configuration file indicates to the toolkit where to look for input files, write output files, which processes and methods to apply and any possible parameters that should be set for given methods. A ''comprehensive'' example of the configuation file is given automatically in the file \verb=config.yml=, which outlines all possible options. The easiest process is to open this file, then edit and delete various options and parameters before saving the configution file to a new file (e.g. \verb=my_config_1.yml=) then executing that in place of the original configuration file. 
 
 The various settings for the different algorithms will be discussed in due course, so the following considers just the main headers (i.e. the control) of the toolkit:
 
-\begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\scriptsize]
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\scriptsize, samepage=true]
 \# *********************************************************
 \# MT Workflow configuration file
 \# *********************************************************
@@ -33,7 +32,7 @@ The various settings for the different algorithms will be discussed in due cours
 \# =========================================================
 \\
 \# Path to the file defining the eq catalog.
-eq_catalog_file: tests/data/completeness_input_test.csv
+eq_catalog_file: tests/data/an_input_catalogue.csv
 \\
 \# Path to the file defining the transformed
 \# eq catalog after the preprocessing jobs.
@@ -45,11 +44,11 @@ pprocessing_result_file: tests/data/preprocessed_catalogue.csv
 completeness_table_file: tests/data/completeness_table.csv
 \\
 \# Path to the file defining the source model.
-source_model_file: tests/data/area_source_model_processing.xml
+source_model_file: tests/data/an_input_area_source_model.xml
 \\
 \# Path to the file defining the results
 \# of computation.
-result_file: tests/data/output.xml
+result_file: tests/data/an_input_area_source_model.xml
 \\
 \# Boolean flag to declare
 \# if processing jobs are needed.
@@ -77,37 +76,33 @@ processing_jobs:
 - Recurrence
 - MaximumMagnitude
 \\
+\end{Verbatim}
+
+\emph{...continues overleaf}
+
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\scriptsize, samepage=true]
 \# =========================================================
 \# Preprocessing jobs in detail
 \# =========================================================
 \\
 \# Declustering jobs
 \\
-.
-.
-.
+        ...
 \\
 \# Completeness jobs
 \\
-.
-.
-.
-\\
+        ...
 \# =========================================================
 \# Processing jobs in detail
 \# =========================================================
 \\
 \# Recurrence job
 \\
-.
-.
-.
+        ...
 \\
 \# Maximum Magnitude Job
 \\
-.
-.
-.
+        ...
 \end{Verbatim}
 
 In the initial lines, the toolkit is told the path to look for the input earthquake catalogue (\verb=eq_catalog_file=); the path to which it should write the ''pre-processed catalogue'' (\verb=pprocessing_catalog_file=); the path to which it should write the completeness table, or from which it should read the completeness table if no completeness jobs are defined (\verb=completeness_table_file=); the path from which it should find the area source geometries (\verb=source_model_file=), formatted here as xml (\verb=source_model_file=), and the path to write the output area sources (\verb=result_file=). 
@@ -161,6 +156,40 @@ sigmaML & Uncertainty (standard deviation) in local magnitude of event (float) \
 
 \subsection{The Source Model Format}
 
+The source model typology currently supported by the Modeller's Toolkit is only the area source model, for which the source geometry is defined via a polygon. The source model is both input and output in GEM's NRML (\verb=Natural Risk Markup Language=) format (although support for shapefile input definitions will be forthcoming in future releases). This is due to the incremental development of the tool. At present there are no tools for defining other properties such as the rupture depth distribution or focal mechanism, so these must be defined independently of the analysis. As more features become available the need to setup the models in this manner will hopefully be relaxed further. A comprehensive description of the seismogenic source model input format required for OpenQuake is found in the OpenQuake book and manual, available online at \href{http://openquake.org/users/}{http://openquake.org/users/}, but the general format is given here:
+ 
+\begin{Verbatim}[frame=single, commandchars=\\\{\},fontsize=\normalsize, samepage=true]
+<\textcolor{red}{areaSource} gml:id="ID">
+	<gml:name>NAME</gml:name>
+	<tectonicRegion>TECT_REG_TYPE</tectonicRegion>
+	<\textcolor{green}{areaBoundary}>
+		...
+	</\textcolor{green}{areaBoundary}>
+	<textcolor{blue}{ruptureRateModel}>
+		...
+	</\textcolor{blue}{ruptureRateModel}>
+	<\textcolor{magenta}{ruptureDepthDistribution}>
+		...
+	</\textcolor{magenta}{ruptureDepthDistribution}>
+	<\textcolor{orange}{hypocentralDepth}>
+		...	
+	</\textcolor{orange}{hypocentralDepth}>
+</\textcolor{red}{areaSource}>
+\end{Verbatim}
+
+As the intention of this model is to calculate the \cite{GutenbergRichter1944} a-value, b-value and $m_{max}$ the \verb=ruptureRateModel= must be defined as \verb=truncatedGutenbergRichter=, e.g.:
+
+\begin{Verbatim}[frame=single, commandchars=\\\{\},fontsize=\normalsize, samepage=true]
+<\textcolor{red}{truncatedGutenbergRichter}>
+	<\textcolor{green}{aValueCumulative}>CUMULATIVE_A_VALUE</\textcolor{green}{aValueCumulative}>
+	<\textcolor{blue}{bValue}>B_VALUE</\textcolor{blue}{bValue}>
+	<\textcolor{magenta}{minMagnitude}>MINIMUM_MAGNITUDE</\textcolor{magenta}{minMagnitude}>
+	<\textcolor{orange}{maxMagnitude}>MAXIMUM_MAGNITUDE</\textcolor{orange}{maxMagnitude}>
+</\textcolor{red}{truncatedGutenbergRichter}>
+\end{Verbatim}
+
+As a default, initial parameters need to be entered into these fields prior to the analysis. It is therefore recommended to set these values to 0.0. 
+
 
 \section{Declustering}
 
@@ -200,25 +229,25 @@ A further alternative is suggested by \cite{Uhrhammer1986}
 \mbox{distance (km)} = e^{-1.024 + 0.804 M} \quad \mbox{time} = e^{-2.87 + 1.235 M}
 \end{equation}
 
-A comparison of the expected window sizes with magnitude are shown for distance (\ref{fig: declus_wind_dist}) and time (\ref{fig: declus_wind_dist}).
+A comparison of the expected window sizes with magnitude are shown for distance  and time (Figure \ref{fig:declust_scaling}).
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
   \centering
   \begin{subfigure}
       \centering
       \includegraphics[width=8cm]{./figures/declustering_distance_windows.eps}
-      %\caption{Distance (km)}
-      \label{fig:declust_wind_dist}
+%      \caption{Distance (km)}
+%      \label{fig:declust_wind_dist}
 	\end{subfigure}
 	
   \begin{subfigure}
       \centering
       \includegraphics[width=8cm]{./figures/declustering_time_windows.eps}
-      %\caption{Time}
-      \label{fig:declust_wind_time}
+%      \caption{Time}
+%      \label{fig:declust_wind_time}
 	\end{subfigure}	
 	\caption{Scaling of declustering time and distance windows with magnitude}
-	\label{fig: declust_scaling}
+	\label{fig:declust_scaling}
 \end{figure}
 
 The \cite{GardnerKnopoff1974} algorithm and its derivatives represent are most computationally straightforward approach to declustering. Whilst the windows themselves may be derived from judgement, the algorithm has been found to be surprisingly robust, with the resulting declustered catalogues often demonstrated to be Poissonian \cite{vanStiphout2010}. 
@@ -267,11 +296,11 @@ As with the \cite{GardnerKnopoff1974} function, the \verb=time_dist_windows= att
 
 In the earliest stages of processing an instrumental seismic catalogue to derive inputs for seismic hazard analysis, it is necessary to determine the magnitude completeness threshold of the catalogue. To outline the meaning of the term ''magnitude completeness'' and the requirements for its analysis as an input to PSHA, the terminology of \cite{Mignan2010} is adopted. This defines the magnitude of completeness as the ''lowest magnitude at which 100 \% of the events in a space-time volume are detected (\cite{RydelekSacks1989, WoessnerWiemer2005})''. Incompleteness of an earthquake catalogue will produce bias when determining models of earthquake recurrence, which may have a significant impact on the estimation of hazard at a site. Identification of the completeness magnitude of an earthquake catalogue is therefore a clear requirement for the processing of input data for seismic hazard analysis.
 
-It should be noted that this summary of methodologies for estimating completeness is directed toward techniques that can be applied to a ''typical'' instrumental seismic catalogue. We therefore make the assumption that the input data will contain basic information for each earthquake such as time, location, magnitude. We do not make the assumption that network-specific or station-specific properties (e.g., configuration, phase picks, attenuation factors) are known a priori. This limits the selection of methodologies to those classed as estimators of ''sample completeness'', which defines completeness on the basis of the statistical properties of the earthquake catalogue, rather than ''probability-based completeness'', which defines the probability of detection given knowledge of the properties of the seismic network (\cite{SchorlemmerWoessner2008}). This therefore excludes the methodology of (\cite{SchorlemmerWoessner2008}), and similar approaches such as those of \cite{Gomberg1991} and \cite{Felzer2008}
+It should be noted that this summary of methodologies for estimating completeness is directed toward techniques that can be applied to a ''typical'' instrumental seismic catalogue. We therefore make the assumption that the input data will contain basic information for each earthquake such as time, location, magnitude. We do not make the assumption that network-specific or station-specific properties (e.g., configuration, phase picks, attenuation factors) are known a priori. This limits the selection of methodologies to those classed as estimators of ''sample completeness'', which defines completeness on the basis of the statistical properties of the earthquake catalogue, rather than ''probability-based completeness'', which defines the probability of detection given knowledge of the properties of the seismic network (\cite{SchorlemmerWoessner2008}). This therefore excludes the methodology of (\cite{SchorlemmerWoessner2008}), and similar approaches such as that of \cite{Felzer2008}
 
 The current workflows assume that completeness will be applied to the whole catalogue, ideally returning a table of time-varying completeness. The option to explore spatial variation in completeness is not explicitly supported, but could be accommodated by an appropriate configuration of the toolkit.
 
-\subsection{User-defined Table} - Currently Available
+\subsection{User-defined Table}
 
 This is simply a filtering that will remove from further consideration any events outside of the completeness bounds defined by the user. The table represents the time variation in $M_C$ and can be input as a separate file (in comma-separated value format) in the following format.
 \begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\scriptsize]
@@ -413,7 +442,6 @@ Three different estimators of maximum magnitude are given by \cite{Kijko2004}, e
 Whilst the fixed and uncertain b-value estimators can be applied in many situations, at present only the ''Non-Parametric Gaussian'' estimator is implemented here (the remainder will be implemented in due course).
 
 The non-parametric Gaussian estimator for maximum magnitude $m_{max}$ is defined as:
-
 %\begin{equation}
 \begin{eqnarray}
 m_{max} & = & m_{max}^{obs} + \Delta \\
@@ -434,11 +462,24 @@ The uncertainty on maximum magnitude is determined via:
 
 Therefore the uncertainty on $m_{max}$ is conditioned primarily on the uncertainty of the largest observed magnitude. As in many catalogues the largest observed magnitude may be an earlier historical event, which will be associated with a large uncertainty, this estimator tends towards large uncertainties on $m_{max}$.
 
-
-
 %\section{EPRI (1994), CEUS 2012} - Investigating
+\subsection{Cumulative Moment\citep{MakropoulosBurton1983}}
 
-\subsection{\cite{MakropoulosBurton1983}} - Currently Available
+The cumulative moment release method is an adaptation of the cumulative strain energy release method for estimating $m_{max}$ originally proposed by \cite{MakropoulosBurton1983}. Another method based on a pseudo-graphical formulation, an estimator of maximum magnitude can be derived from a plot of cumulative seismic moment release with time. The average slope of this plot indicates the mean moment release for the input catalogue in question. Two further straight lines are defined with gradients equal to that of the slope of mean cumulative moment release, both enveloping the cumulative plot. The vertical distance between these two lines indicates the total amount of moment that may be released in the region, if no earthquakes were to occur in the corresponding time (i.e. the distance between the upper and lower bounding lines on the time axis). This concept is illustrated in Figure \ref{fig:Cumulative_Moment}. 
+
+\begin{figure}[htb]
+	\centering
+		\includegraphics[height=6cm, keepaspectratio=true]{./figures/Cumulative_Moment.eps}
+	\caption{Illustratation of Cumulative Moment Release Concept}
+	\label{fig:Cumulative_Moment}
+\end{figure}
+
+The cumulative moment estimator of $m_{max}$, whilst simple in concept, has several key advantages. As a non-parametric method it is independent of any assumed probability distribution and cannot estimate $m_{max}$ lower than the observed $m_{max}$. It is also principally controlled by the largest events in the catalogue, this making it relative insensitive to uncertainties in completeness or lower bound threshold. In practice, this estimator, and to some extent that of \cite{Kijko2004} are dependent on having a sufficiently long record of events relative to the strain cycle for the region in question, such that the estimate of average moment release is stable. This will obviously depend on the length of the catalogue, and for some regions, particularly those in low strain intraplate environments, it is often the case that $m_{max}$ will be close to the observed $m_{max}$. Therefore it may be the case that it is most appropriate to use these techniques on a larger scale, either considering multiple sources or an appropriate tectonic proxy.
+
+For the cumulative moment estimator it is possible to take into account the uncertainty on $m_{max}$ by applying bootstrap sampling to the observed magnitudes and their respective uncertainties. This has the advantage that $\sigma_{m_{max}}$ is not controlled by the uncertainty on the observed $m_{max}$, as it is for the \cite{Kijko2004} algorithm. Instead it takes into account the uncertainty on all the magnitudes in the catalogue. The cost of this, however, is that this method is more computationally intensive, and therefore slower, than \cite{Kijko2004}, depending on the number of bootstrap samples the user chooses.
+
+The maximum magnitude algorithm is configured according to the following settings in the ''processing'' jobs: 
+
 
 \begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\scriptsize]
 MaximumMagnitude: \{\\
@@ -464,3 +505,5 @@ MaximumMagnitude: \{\\
     number_bootstraps: 100\\
 \}
 \end{Verbatim}
+
+The \verb=maxim_mag_algorithm= indicates the choice of algorithm used, \verb=iteration_tolerance= and \verb=maximum_iterations= are parameters controlling the convergence of the iteration (only applicable to \cite{Kijko2004}), \verb=neq= corresponds to the number of largest earthquakes used for the \cite{Kijko2004} algorithm and \verb=number_samples= the number of samples of the cumulative Gaussian distribution function used inside the integral of the \cite{Kijko2004} function. More samples increases accuracy, but at the cost of speed. For the cumulative moment algorithm the only user configurable parameter is the \verb=number_bootstraps=, which is the number of samples used during the bootstrapping process. 
