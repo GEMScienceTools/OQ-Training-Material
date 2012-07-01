@@ -269,7 +269,7 @@ The \verb=time_dist_windows= attribute indicates the choice of the time and dist
 
 %\section{Reasenberg (1985)} – Code written, not implemented in MTK
 
-\subsection{AFTRAN (\cite{Musson1999PSHABalkan})}
+\subsection{AFTERAN (\cite{Musson1999PSHABalkan})}
 
 A particular development of the standard windowing approach is introduced in the program AFTERAN \cite{Musson1999PSHABalkan}. This is a modification of the \cite{GardnerKnopoff1974} algorithm, using a moving time window rather than a fixed time window. In AFTERAN, considering each earthquake in order of descending magnitude, events within a fixed distance window are identified (the distance window being those suggested previously). These events are searched using a moving time window of 100 days. For a given mainshock, non Poissonian events are identified if they occur both within the distance window and the initial time window. The time window is then moved, beginning at the last flagged event, and the process repeated. For a given mainshock, all non-Poissonian events are identified when the algorithm finds a continuous period of 100 days in which no aftershock or foreshock is identified. 
 
@@ -327,9 +327,9 @@ with variance $\sigma_{\lambda}^{2} = \lambda / n$. Taking the unit time interva
    \sigma_{\lambda} = \sqrt{\lambda} / \sqrt{T}
 \end{equation}
 
-where $T$ is the sample length. As the Poisson assumption implies a stationary process, $\sigma_{\lambda}$ behaves as $1/\sqrt{T}$ in the sub-interval of the sample in which the mean rate of occurrence of a magnitude class is constant. Time variation of $M_C$ can usually be inferred graphically from Stepp's [1971] analysis, as is illustrated in Figure {fig: SteppFigExample1}. In this example, the deviation from the $1/sqrt{T}$ line for each magnitude class occurs at around 40 years  for $4.5 < M < 5$, 100 years for $5.0  < M < 6.0$, approximately 150 years for $6.0 < M < 6.5$ and 300 years for $M > 6.5$. Knowledge of the sources of earthquake information for a given catalogue may usually be reconciled with the completeness time intervals.
+where $T$ is the sample length. As the Poisson assumption implies a stationary process, $\sigma_{\lambda}$ behaves as $1/\sqrt{T}$ in the sub-interval of the sample in which the mean rate of occurrence of a magnitude class is constant. Time variation of $M_C$ can usually be inferred graphically from Stepp's [1971] analysis, as is illustrated in Figure \ref{fig:SteppFigExample1}. In this example, the deviation from the $1/sqrt{T}$ line for each magnitude class occurs at around 40 years  for $4.5 < M < 5$, 100 years for $5.0  < M < 6.0$, approximately 150 years for $6.0 < M < 6.5$ and 300 years for $M > 6.5$. Knowledge of the sources of earthquake information for a given catalogue may usually be reconciled with the completeness time intervals.
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
 	\centering
 		\includegraphics[height=10cm, keepaspectratio=true]{./figures/C2Fig1SteppFig1.eps}
 	\caption{Example of Completeness Estimation by the \cite{Stepp1971} methodology}

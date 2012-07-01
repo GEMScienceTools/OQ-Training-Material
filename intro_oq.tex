@@ -200,4 +200,190 @@ America, Japan).
 
 % -----------------------------------------------------------------------------
 \section{Calculation workflows}
+% Three types of analysis
+The hazard component of OpenQuake-Hazard performs seismic hazard 
+analysis (SHA) following various approaches. 
+%
+Currently three main types of analysis are supported:
+\begin{itemize}
+\item \textit{Classical Probabilistic Seismic Hazard Analysis (cPSHA)}, 
+allowing calculation of hazard curves and hazard maps following the 
+classical integration procedure 
+(\cite{cornell1968}, \citet{mcguire1976}) as formulated by \cite{field2003}).
+\item \textit{Event-Based Probabilistic Seismic Hazard Analysis (ePSHA)}, 
+allowing calculation of ground-motion fields from stochastic event sets. 
+Eventually, classical cPSHA results - such as hazard curves - can be 
+obtained by post-processing the set of computed ground-motion fields.
+\item \textit{Deterministic SHA (DSHA)}, allowing calculation of ground 
+motion fields from a single earthquake rupture scenario taking into account 
+ground-motion aleatory variability.
+\end{itemize}
+Each of these analysis types has a modular structure, which provides the capability of investigating 
+all possible intermediate results. Moreover, each calculator can be 
+extended independently of the others so that more calculation 
+options and methodologies can be easily introduced, without affecting the 
+overall calculation workflow. 
+Each of the workflows described in the following Sections involves a number 
+of calculators, each responsible for a specific task. 
+Figures \ref{classical_psha_workflow}, \ref{event_based_workflow}, and 
+\ref{deterministic_workflow} schematically depict the different calculation 
+workflows.
+%
+%  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Classical Probabilistic Seismic Hazard Analysis}
+\label{section:classicalPSHA}
+%
+Input data for the classical PSHA consist of a PSHA Input Model (PSHAim) that 
+is provided together with a set of calculation settings. 
+%
+The OpenQuake book \citep{crowley2011} describes extensively the content of a PSHAim and 
+- in particular - the different options for modeling seismogenic sources 
+and the option offered to include epistemic uncertainties on both seismicity 
+and ground-motion models in the form of a logic tree.
+%
+% ..............................................................................
+% . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . > Figure
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=14cm]{./figures/classical_psha_workflow.eps}
+\caption{Workflow for classical PSHA (boxes with an orange border represent the 
+calculators). Given a PSHA Input Model 
+the Logic Tree Processor is responsible for creating a Seismic Source model
+and a ground-motion model. 
+The Seismic Source model is then provided to the Earthquake Rupture Forecast 
+calculator, which computes the ERF (the list of all earthquake ruptures in the 
+source model with their probabilities of occurrence). 
+Using the ERF and the GMPEs model the Classical PSHA calculator produces 
+curves at the sites of interest.}
+\label{classical_psha_workflow}
+\end{center}
+\end{figure}
+% . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . < Figure
+% ..............................................................................
+
+As represented in Figure \ref{classical_psha_workflow}, the main calculators 
+used to perform this analysis are:
+\begin{enumerate}
+%
+\item \emph{Logic Tree Processor} \hfill \\
+The Logic Tree Processor (LTP) takes as an input the PSHA Input Model and 
+creates a Seismic Source Model. The LTP uses the information in the Initial 
+Seismic Source Models and by 'harvesting' the information contained in the 
+Seismic Source Logic Tree - that is to sample the epistemic uncertainties - 
+it creates a Seismic Source Model (i.e. a model describing geometry and 
+activity rates of each source without any epistemic uncertainty). 
+%
+Following the procedure just described the Logic Tree Processor creates a 
+Ground Motion model (i.e. a data structure that associates to each tectonic 
+region considered in the calculation a GMPE).
+%
+\item \emph{Earthquake Rupture Forecast Calculator} \hfill \\
+The produced Seismic Source Model is then used as input for the Earthquake 
+Rupture Forecast (ERF) calculator which computes the probability of occurrence, 
+over a specified time span, for each earthquake rupture produced by the source 
+model.
+\item \emph{Classical PSHA Calculator} \hfill \\
+The cPSHA uses the ERF and the Ground Motion model to compute hazard curves on 
+each site specified in the calculation settings.
+\end{enumerate} 
+%
+%  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Event-Based Probabilistic Seismic Hazard Analysis}
+\label{section:event-basedPSHA}
+Input data for the Event-Based PSHA - as in the case of the Classical PSHA 
+calculator - consist of a PSHA Input Model supplied to OQ together with a 
+set of calculation settings.
+%
+% ..............................................................................
+% . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . > Figure
+\begin{figure}
+\centering
+\includegraphics[width=14cm]{./figures/event_based_workflow.eps}
+\caption{Workflow for event-based PSHA. Similar to the classical PSHA workflow 
+(Figure \ref{classical_psha_workflow}), an ERF is computed, which is then used 
+to generate a stochastic event set (representative of the seismic activity of 
+a region in a given time span). Each event is then utilized to calculate a 
+ground-motion field over a region of interest.}
+\label{event_based_workflow}
+\end{figure}
+% . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . < Figure
+% ..............................................................................
+As represented in Figure \ref{event_based_workflow}, the main calculators 
+used to perform this analysis are:
+\begin{enumerate}
+%
+\item \emph{Logic Tree Processor} \hfill \\
+The Logic Tree Processor was already 
+introduced in the description of the cPSHA workflow (see section 
+\ref{section:classicalPSHA} at page \pageref{section:classicalPSHA}).
+%
+\item \emph{Earthquake Rupture Forecast Calculator} \hfill \\ 
+The Earthquake Rupture Forecast Calculator was already 
+introduced in the description of the cPSHA workflow (see section 
+\ref{section:classicalPSHA} at page \pageref{section:classicalPSHA}).
+%
+\item \emph{Stochastic Event Set Calculator} \hfill \\
+The Stochastic Event Set Calculator generates a Stochastic Event set 
+by sampling each rupture contained in the ERF according to its 
+probability of occurrence. Usually a Stochastic Event Set (SES) contains
+a large number of seismicity histories each one representative of a  
+possible collection of events that can be produced by the seismic source
+considered in an analysis during the time span fixed for the calculation
+of hazard (normally corresponding to 50 years).
+%
+\item \emph{Ground Motion Field Calculator} \hfill \\
+The Ground Motion Field Calculator computes for each event contained in a 
+Stochastic Event Set - provided as an input - a realization of the 
+ground shaking taking into account the aleatory uncertainties in 
+the ground-motion model. Eventually, the Ground Motion Field calculator 
+can consider the spatial correlation of the ground-motion during the 
+generation of the GMF.
+%
+\item \emph{Event-based PSHA Calculator} \hfill \\
+The event-based PSHA calculator takes a (large) set of ground-motion 
+fields representative of the possible shaking that the investigated 
+area can eventually experience over a (large) time span and for each 
+grid node in a ground-motion fields computes the corresponding hazard 
+curve. 
+%
+This procedure is computationally intensive and is not recommended for 
+investigating the hazard over large areas. 
+\end{enumerate}
+
+The Logic Tree Processor and the Earthquake rupture forecast were already 
+introduced during the descrption of the cPSHA workflow (see section 
+\ref{section:classicalPSHA} at page \pageref{section:classicalPSHA}).
+%
+%  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Deterministic Seismic Hazard Analysis}
+\label{section:deterministicSHA}
+% Deterministic
+For deterministic SHA (DSHA), the input data consist of a single earthquake 
+rupture model and a single ground-motion model. Using the Ground Motion Field 
+Calculator, multiple realizations of ground shaking can be computed, each 
+realization sampling the aleatory uncertainties in the ground-motion model.
+
+As represented in Figure \ref{deterministic_workflow}, the main calculators 
+used to perform this analysis are:
+\begin{enumerate}
+\item \emph{Ground Motion Field Calculator} \hfill \\
+The Ground Motion Field Calculator was already 
+introduced during the descrption of the ePSHA workflow (see section 
+\ref{section:event-basedPSHA} at page \pageref{section:classicalPSHA}).
+\end{enumerate}
+% ..............................................................................
+% . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . > Figure
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=14cm]{./figures/deterministic_workflow.eps}
+\caption{Workflow for deterministic SHA. Given a rupture scenario model, 
+consisting of an earthquake rupture model, plus a GMPE, the ground-motion 
+field calculator can compute multiple ground-motion field realizations (by 
+taking into account GMPE aleatory uncertainties).}
+\label{deterministic_workflow}
+\end{figure}
+% ..............................................................................
+
+
+
 \cleardoublepage

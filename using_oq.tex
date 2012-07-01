@@ -1,5 +1,287 @@
+The following summarises the inputs for running OpenQuake for seismic hazard calculations. This is a general overview, and the reader is referred to the OpenQuake Book (\href{http://openquake.org/wp-content/uploads/2011/10/OpenQuake-Book_Version0.1.pdf}{http://openquake.org/wp-content/uploads/2011/10/OpenQuake-Book_Version0.1.pdf}) and OpenQuake user manual (\href{http://openquake.org/wp-content/uploads/2011/11/OpenQuake_User_Manual_Version0.1.pdf}{http://openquake.org/wp-content/uploads/2011/11/OpenQuake_User_Manual_Version0.1.pdf}). 
+
+\section{Set-Up and Run OpenQuake}
+
+In this workshop each participant shall be using one of the two ''desktop'' methods for running OpenQuake. At present OpenQuake itself is executable only within  an Ubuntu Linux. Therefore, in order to run the software on your desktop, you will need to use either a virtual machine or an account and connection to our OpenQuake Alpha Testing Service (OATS). In both cases, the amount of available Random Access Memory (RAM) is limited, so we shall be considering only small scale calculations - i.e. those considering a relatively small number or sources and/or sites and logic tree branches. It should be emphasised that significant measures have been taken to address the problem of heavy RAM consumption and these measures will be implemented in a forthcoming stable release of OpenQuake.
+
+The environment for running OpenQuake will depend on the specifications of the computer available. For demonstrations such as those considered here, the Virtual Machine will need to have at least 1 Gb of RAM assigned to it, and ideally more. Problems of system stability can emerge when allocating a large proportion of the computer's available RAM to the Virtual Machine. It is therefore recommended that if the computer has 2 Gb of RAM or less the user should utilise the OATS service. 
+
+
+\subsection{Virtual Machine Users}
+
+OpenQuake is installed on a desktop as part of an Ubuntu Server Operating System, which is run using Virtual Box - a free software for virtualization (\href{https://www.virtualbox.org}{www.virtualbox.org/}. The appropriate version for your operating system can be downloaded from \href{https://www.virtualbox.org/wiki/Downloads}{www.virtualbox.org/wiki/Downloads}. The executable file should be downloaded and run using all the default settings suggested.
+
+A full image of the Ubuntu Server environment, complete with OpenQuake, the Modeller's Toolkit and all necessary packages, should have been provided in a USB drive. This contains the 32-bit version and 64-bit version of OpenQuake. The 64-bit version is preferred; however, not all computers support 64-bit virtualisation, even if the operating system is 64-bit. It may be the case that the 32-bit version is necessary.
+
+To configure the Virtual Box settings these steps should be followed:
+\begin{itemize}
+
+\item Open Virtual Box then select \verb=File= - \verb=Import Appliance=. Click the ''Choose'' button, and then navigate to the location in which the OpenQuake image was stored. The file type is \verb=.ova=
+
+\item In the same folder as the OpenQuake image, create a new folder named ''vbox''. This is a shared directory that is automatically mounted the virtual operating system, which allows you to share files between your own operating system and the virtual machine. The OpenQuake outputs will be directed to this folder, to enable them to be accessed within your own operating system.
+
+\item Return to Virtual Box and select the Virtual Machine that has now been created. Then click on \verb=Settings=, \verb=Shared Folders=. Here you should click to add a folder, choose file then navigate to the ''vbox'' folder just created. Click OK and then return to the main Virtual Box window.
+
+\item Start the Virtual Machine by selecting the machine and then clicking ''Run''. The start-up may take a minute or so, depending on your machine.
+
+\item When prompted enter the username: \verb=openquake=, and password: \verb=openquake=. In latter instructions it may be necessary to use the \verb=sudo= commands, for which a password is required. The password will always be \verb=openquake=.
+
+\item 
+
+
+\subsection{OATS Users}
+
+
+
+
+The main execution of OpenQuake is undertaken via the following command-line instruction:
+
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, samepage=true]
+openquake --\textcolor{red}{config_file}=/PATH/TO/CONFIG/FILE --\textcolor{red}{output_type}=xml
+\end{Verbatim}
+
 % -----------------------------------------------------------------------------
 \section{Structure of an input model}
+
+\section{Input Data definition for Classical and Event Based PSHA, Disaggregation and UHS}
+Input data for probabilistic based seismic hazard analysis (Classical, Event based, Disaggregation, and UHS) are structured in terms of a:
+\begin{itemize}
+\item file describing the Seismic Source System, that is the set of initial source models and associated epistemic uncertainties needed to model the seismic activity in the region of interest.
+\item file describing the Ground Motion System, that is the set of ground motion prediction equations, per tectonic region type, needed to model the ground motion shaking in the region of interest.
+\end{itemize}
+The paths to the Seismic Source and Ground Motion System files are given in the 
+\Verb+SOURCE_MODEL_LOGIC_TREE_FILE+ and \Verb
++GMPE_LOGIC_TREE_FILE+ keys, respectively, both defined in the \Verb+[HAZARD]+ section of the configuration file:\\
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, samepage=true]
+[\textcolor{red}{HAZARD}]
+...
+SOURCE_MODEL_LOGIC_TREE_FILE=/PATH/TO/SEISMIC/SOURCE/SYSTEM/FILE
+GMPE_LOGIC_TREE_FILE=/PATH/TO/GROUND/MOTION/SYSTEM/FILE
+...
+\end{Verbatim}
+
+The main control of the program is set in the configuration file (\verb=config.gem=), and example of which is broken down below:
+
+\begin{enumerate}
+
+\item The calculation type and target grid
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, samepage=true]
+[general]
+
+CALCULATION_MODE = Classical
+
+# NOTE: The order of the vertices is to be kept!!!
+# lat, lon of polygon vertices (in clock or counter-clock wise order)
+REGION_VERTEX = 
+# degrees
+REGION_GRID_SPACING = 
+\end{Verbatim}
+
+\item The configuration of the hazard calculation
+
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, samepage=true]
+[HAZARD]
+
+DEPTHTO1PT0KMPERSEC = 100.0
+VS30_TYPE = measured
+SOURCE_MODEL_LT_RANDOM_SEED = 23
+GMPE_LT_RANDOM_SEED = 5
+GMF_RANDOM_SEED = 3
+
+# file containing erf logic tree structure
+SOURCE_MODEL_LOGIC_TREE_FILE = source_model_logic_tree.xml
+# file containing gmpe logic tree structure
+GMPE_LOGIC_TREE_FILE = gmpe_logic_tree.xml
+# output directory - relative to this file
+OUTPUT_DIR = computed_output
+\end{Verbatim}
+
+\item Hazard Probability Settings
+
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, samepage=true]
+# moment magnitude (Mw)
+MINIMUM_MAGNITUDE = 5.0
+# years
+INVESTIGATION_TIME = 50.0
+# maximum integration distance (km)
+MAXIMUM_DISTANCE = 200.0
+# bin width of the magnitude frequency distribution
+WIDTH_OF_MFD_BIN = 0.2
+\end{Verbatim}
+
+\item Ground Motion Prediction Equation (GMPE) Settings
+
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, samepage=true]
+# (Average Horizontal, Average Horizontal (GMRotI50), Random Horizontal, Greater of Two Horz., Vertical)
+COMPONENT = Average Horizontal (GMRotI50)
+# (PGA (g), PGD (cm), PGV (cm/s), SA (g), IA (m/s), RSD (s))
+INTENSITY_MEASURE_TYPE = PGA
+# seconds, used only for Spectral Acceleration
+PERIOD = 0.0
+# in percent
+DAMPING = 5.0
+# (in the same units of the intensity measure type)
+# TODO make it a comma separated list and adapt code (CalculatorConfigHelper.makeArbitrarilyDiscretizedFunc())
+INTENSITY_MEASURE_LEVELS = 0.005, 0.007, 0.0098, 0.0137, 0.0192, 0.0269, 0.0376, 0.0527, 0.0738, 0.103, 0.145, 0.203, 0.284, 0.397, 0.556
+#0.005, 0.007, 0.0098, 0.0137, 0.0192, 0.0269, 0.0376, 0.0527, 0.0738, 0.103, 0.145, 0.203, 0.284, 0.397, 0.556, 0.778, 1.09, 1.52, 2.13
+# (None, 1 Sided, 2 Sided)
+GMPE_TRUNCATION_TYPE = 2 Sided
+# (1,2,3,...)
+TRUNCATION_LEVEL = 3
+# (Total, Inter-Event, Intra-Event, None (zero), Total (Mag Dependent), Total (PGA Dependent), Intra-Event (Mag Dependent))
+STANDARD_DEVIATION_TYPE = None (zero)
+# (m/s)
+REFERENCE_VS30_VALUE = 760.0
+# The depth to where shear-wave velocity = 2.5 km/sec.
+# Cambpell basin depth. Measure is (km)
+REFERENCE_DEPTH_TO_2PT5KM_PER_SEC_PARAM = 5.0
+
+# Rock, Deep-Soil
+SADIGH_SITE_TYPE = Rock
+\end{Verbatim}
+
+\item Area Source Model Configuration 
+
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, samepage=true]
+# true or false
+INCLUDE_AREA_SOURCES = true
+# (Point Sources, Line Sources (random or given strike), Cross Hair Line Sources, 16 Spoked Line Sources)
+TREAT_AREA_SOURCE_AS = Point Sources
+# degrees
+AREA_SOURCE_DISCRETIZATION = 0.1
+# (W&C 1994 Mag-Length Rel.)
+AREA_SOURCE_MAGNITUDE_SCALING_RELATIONSHIP = W&C 1994 Mag-Length Rel.
+\end{Verbatim}
+
+\item Point Source Model Configuration
+
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, samepage=true]
+# true or false
+INCLUDE_GRID_SOURCES = true
+# (Point Sources, Line Sources (random or given strike), Cross Hair Line Sources, 16 Spoked Line Sources)
+TREAT_GRID_SOURCE_AS = Point Sources
+# (W&C 1994 Mag-Length Rel.)
+GRID_SOURCE_MAGNITUDE_SCALING_RELATIONSHIP = W&C 1994 Mag-Length Rel.
+\end{Verbatim}
+\item Fault Source Configuration
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, samepage=true]
+# true or false
+INCLUDE_FAULT_SOURCE = true
+# km
+FAULT_RUPTURE_OFFSET = 5.0
+# km
+FAULT_SURFACE_DISCRETIZATION = 5.0
+# (W&C 1994 Mag-Length Rel.)
+FAULT_MAGNITUDE_SCALING_RELATIONSHIP = PEER Tests Mag-Area Rel.
+FAULT_MAGNITUDE_SCALING_SIGMA = 0.0
+# (rupture length/rupture width)
+RUPTURE_ASPECT_RATIO = 2.0
+# (Only along strike ( rupture full DDW), Along strike and down dip, Along strike & centered down dip)
+RUPTURE_FLOATING_TYPE = Along strike and down dip
+
+# true or false
+INCLUDE_SUBDUCTION_FAULT_SOURCE = true
+# km
+SUBDUCTION_FAULT_RUPTURE_OFFSET = 10.0
+# km
+SUBDUCTION_FAULT_SURFACE_DISCRETIZATION = 10.0
+# (W&C 1994 Mag-Length Rel.)
+SUBDUCTION_FAULT_MAGNITUDE_SCALING_RELATIONSHIP = W&C 1994 Mag-Length Rel.
+SUBDUCTION_FAULT_MAGNITUDE_SCALING_SIGMA = 0.0
+# (rupture length/rupture width)
+SUBDUCTION_RUPTURE_ASPECT_RATIO = 1.5
+# (Only along strike ( rupture full DDW), Along strike and down dip, Along strike & centered down dip)
+SUBDUCTION_RUPTURE_FLOATING_TYPE = Along strike and down dip
+\end{Verbatim}
+
+\item Logic Tree configuration
+
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, samepage=true]
+NUMBER_OF_LOGIC_TREE_SAMPLES = 1
+
+# List of quantiles to compute
+QUANTILE_LEVELS =
+
+# Compute mean hazard curve
+COMPUTE_MEAN_HAZARD_CURVE = true
+
+# List of POEs to use for computing hazard maps
+POES = 0.1 0.02
+\end{Verbatim}
+
+
+\subsection{The Seismic Source Model Definition}
+
+The general structure of the xml representing the seismogenic source model corresponds to the following format:
+
+\begin{Verbatim}[frame=single, commandchars=\\\{\},fontsize=\normalsize, samepage=true]
+<\textcolor{red}{sourceModel} gml:id="ID">
+	...
+	<\textcolor{green}{areaSource} gml:id="SOURCE_ID">
+		<gml:name>SOURCE_NAME</gml:name>
+		<tectonicRegion>TECT_REGION_TYPE</tectonicRegion>
+		...
+	</\textcolor{green}{areaSource}>
+	...
+	<\textcolor{green}{pointSource} gml:id="SOURCE_ID">
+		<gml:name>SOURCE_NAME</gml:name>
+		<tectonicRegion>TECT_REGION_TYPE</tectonicRegion>
+		...
+	</\textcolor{green}{pointSource}>
+	...
+	<\textcolor{green}{simpleFaultSource} gml:id="SOURCE_ID">
+		<gml:name>SOURCE_NAME</gml:name>
+		<tectonicRegion>TECT_REGION_TYPE</tectonicRegion>
+		...
+	</\textcolor{green}{simpleFaultSource}>
+	...
+	<\textcolor{green}{complexFaultSource} gml:id="SOURCE_ID">
+		<gml:name>SOURCE_NAME</gml:name>
+		<tectonicRegion>TECT_REGION_TYPE</tectonicRegion>
+		...
+	</\textcolor{green}{complexFaultSource}>
+	...
+</\textcolor{red}{sourceModel}>
+\end{Verbatim}
+
+
+%\subsubsection{Area Sources}
+%
+%An area source can be utilized to describe a polygonal geographical region where seismicity is assumed to be uniform. The area source-specific elements are:
+%\begin{itemize}
+%\item \Verb+areaBoundary+: defines the area boundary.
+%\item \Verb+ruptureRateModel+: defines a MFD-Focal Mechanism pair.
+%\item \Verb+ruptureDepthDistribution+: defines the (top of) rupture depth distribution versus magnitude.
+%\item \Verb+hypocentralDepth+: defines ruptures' hypocentral depth.
+%\end{itemize}
+%More then one \Verb+ruptureRateModels+ can be defined in a single area source (giving the possibility to define specific MFDs for specific focal mechanisms).
+%
+%\begin{Verbatim}[frame=single, commandchars=\\\{\},fontsize=\normalsize, samepage=true]
+%<\textcolor{red}{areaSource} gml:id="ID">
+%	<gml:name>NAME</gml:name>
+%	<tectonicRegion>TECT_REG_TYPE</tectonicRegion>
+%	<\textcolor{green}{areaBoundary}>
+%		...
+%	</\textcolor{green}{areaBoundary}>
+%	<\textcolor{blue}{ruptureRateModel}>
+%		...
+%	</\textcolor{blue}{ruptureRateModel}>
+%	<\textcolor{blue}{ruptureRateModel}>
+%		...
+%	</\textcolor{blue}{ruptureRateModel}>
+%	...
+%	...
+%	<\textcolor{blue}{ruptureRateModel}>
+%		...
+%	</\textcolor{blue}{ruptureRateModel}>
+%	<\textcolor{magenta}{ruptureDepthDistribution}>
+%		...
+%	</\textcolor{magenta}{ruptureDepthDistribution}>
+%	<\textcolor{orange}{hypocentralDepth}>
+%		...	
+%	</\textcolor{orange}{hypocentralDepth}>
+%</\textcolor{red}{areaSource}>
+%\end{Verbatim}
 
 % -----------------------------------------------------------------------------
 \section{Openquake demos}
