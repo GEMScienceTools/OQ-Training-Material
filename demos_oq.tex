@@ -1,0 +1,34 @@
+% -----------------------------------------------------------------------------
+\section{Openquake demos}
+%
+OpenQuake usage help can be obtained by simply typing
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\small]
+openquake@ubuntu:/media/vbox$ openquake 
+\end{Verbatim}
+and pressing \texttt{<ENTER>}. The provided info will be 
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\small]
+usage: openquake [-h] [--version] [--force-inputs] [--config-file CONFIG_FILE]
+                 [--output-type {db,xml}]
+                 [--log-level {debug,info,warn,error,critical}]
+                 [--log-file LOG_FILE] [--list-calculations]
+                 [--list-outputs CALCULATION_ID]
+                 [--export OUTPUT_ID TARGET_DIR] 
+\end{Verbatim}
+The main execution of OpenQuake is undertaken via the following 
+command-line instruction (note that from this point on we'll indicate the 
+the command prompt with a simple \texttt{\$}.
+
+An OpenQuake analysis can be launched with the following command
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\small]
+$ openquake --\textcolor{red}{config_file}=/PATH/TO/CONFIG/FILE --\textcolor{red}{output_type}=xml
+\end{Verbatim}
+
+\subsection{Area source demo hazard}
+%
+The input files for this demos can be found in the folder 
+\texttt{area\_source\_demo\_hazard}
+
+The input information consists of a PSHA input model for South East Asia 
+developed in the context of the GSHAP project and containing 
+
+\cleardoublepage

@@ -1,5 +1,66 @@
+The seismic hazard input models shown in previous chapters were considered here only for the purposes of demonstration. As indicated, they are based on the GSHAP model for Southeastern Africa, albeit using some original data to recalculate the activities. The primary seismic hazard objective of this regional component is to compile a new and up-to-date seismic hazard model for Sub-Saharan Africa, with input and practical consensus between the participating organisations and countries of the project. The Global Earthquake Model Facility is available to provide assistance and guidance, where needed, on many issues related to the development of the seismic hazard model. Some products and features that we hope will be included in the new hazard model include:
+\begin{itemize}
+\item A new earthquake catalogue for the region, including both historical and instrumental seismicity
+\item A new model of the seismogenic sources, this may include one or more typologies such as uniform area sources, gridded seismicity sources, or fault sources representing some of the most active fault structures in the region. 
+\item An updated set of activity rates for the seismogenic sources in the region
+\item An appropriate tectonic regionalisation and corresponding selection of Ground Motion Predicton Equations (GMPEs) for use in PSHA
+\item Seismic hazard maps for multiple response periods and return periods
+\item Seismic hazard curves, uniform hazard spectra and disaggregation results for selected locations across the region
+\end{itemize}
+
+In addition, it is hoped that this work will extend to the inclusion of seismic risk studies in the region. This may include seismic risk scenarios for selected cities in Sub-Saharan Africa ... \emph{additional notes to follow w/Helen \& Vitor}
+
+The following sections outline some of the ways in which we hope GEM activities will help contribute to the development of the Sub-Saharan Africa Seismic Hazard Model. 
+
 \section{Catalogue processing}
+
+The compilation of an updated earthquake catalogue for Sub-Saharan Africa is of paramount importance for the purposes of seismic hazard analysis in the region. It is also not a trivial process and it will require input from many partners within the region. 
+
+GEM can assist with the process in the following ways:
+
+\subsection{The Global GEM-ISC Instrumental Catalogue}
+
+The GEM Global Component for Instrumental Seismicity was lead by the International Seismological Centre (ISC). Its primary objective was the compilation of a new global catalogue of instrumentally recorded earthquakes covering the period 1900 A.D. to 2009 A.D. Amongst the important tasks undertaken in this extensive work were the compilation and digitisation of early 20th century observatory records, re-location of hypocentres using the state-of-the-art location algorithms, and magnitude homogenisation into moment magnitude (including compilation of the moment tensor). Due to the careful processing of the records, this catalogue represents the most accurate representation of the seismicity for the events recorded, and should therefore be considered a global standard. The magnitudes of considered in this catalogue are: i) 1900 - 1917, $M_S \geq 7.5$; ii) 1918 - 1959, $M_S \geq 6.25$; iii) 1960 - 2009, $M_S \geq 5.5$. 
+
+In addition, it is hoped that efforts to extend the catalogue, both to later years and to lower magnitudes, will continue in cooperation with both GEM and the ISC. GEM would therefore welcome collaboration and cooperation between scientists within the African region and the ISC itself.
+
+\subsection{The Global Earthquake History}
+
+The GEM Global Component for Historical Seismicity, lead by Instituto Nazionale di Geofisica e Vulcanologia (INGV) and the British Geological Survey (BGS), aims to compile a global catalogue of historical earthquakes for the period 1000 A.D. to 1903 A.D.  The catalogue will include events with $M_W \geq 7.0$, although formal completeness analysis is not undertaken. Compilation of a catalogue of historical earthquakes in Africa is currently ongoing, and GEM would like to help facilitate interaction between local geologists and seismologists and the members of the Global Component.
+
+\subsection{Tools for Homogenisation of Catalogues}
+
+The GEM-ISC Global Instrumental Catalogue represents the global standard for instrumental seismicity. Due to the considerable effort required in compilation, the threshold magnitudes are relatively high for the purposes of calculating activity rates. In many parts of the world, including Sub-Saharan Africa, it will be necessary to merge and homogenise multiple catalogues (including those from local networks) for the purposes of increasing coverage at lower magnitudes. The GEM Model Facility is currently in the process of developing a set of software to undertake this tasks. Amongst the features expected to appear in the software are:
+
+\begin{itemize}
+\item Tools for merging catalogues from multiple sources, including identification of duplicates.
+\item A database-structure for identifying sets of events for comparing magnitude scales. This includes means of refining the database queries by agency, time and geographical selection.
+\item A set of regression tools for deriving empirical relations between magnitude scales, applying orthogonal distance regression (allowing for uncertainty in both magnitude scales) and allowing for selection of functional form (linear, n-th order polynomial, piecewise linear).
+\item A user-configurable ''homogenisor'', allowing the user to identify the preferred hypocentre solution and convert recorded magnitudes into the ''target'' magnitudes by a flexible hierarchical selection procedure)
+\end{itemize}
+
+This software is currently still in early (alpha) development, and the source code can be retrieved at any time from the GEM code repositories. A more stable release of the tool is anticipated for the early Autumn.   
+%\begin{enumerate}
+%\item \textbf{The Global GEM-ISC Instrumental Catalogue}
+
+
 \section{Calculation of activity rates}
-\section{Assignment: Preparation of an updated OQ input demo model}
-\subsection{Analysis of results}
-\subsection{Comparison with previous results}
+
+The OpenQuake Modeller's Toolkit shown in this activity represents the earliest stable version of this particular set of tools. It therefore only includes a first set of functionalities for a basic workflow. The development of this tool is ongoing and we expect to see more features added in the forthcoming months.
+
+On our list of future features are the following:
+
+\begin{itemize}
+
+\item Calculation of seismic activity rates from geological and eventually geodetic data
+
+\item Support for more input and output formats (e.g. shapefiles)
+
+\item Tools for investigating simple statistics of the catalogue, e.g. hypocentral depth distribution, types of earthquake mechanism etc.
+
+\item Algorithms for developing models of smoothed seismicity
+
+\item More additions to the current tools (i.e. new declustering algorithms, completeness etc.)
+\end{itemize}
+ 
+Of course, the inclusion of new features is something that is guided by the needs of the users. If you would like to see particular tools included then please do not hesitate to discuss with the Model Facility about the needs and requirements. You can also contribute to the development of the tools, or customise the codes to your own needs, by contributing and adding to the open source code base of all the available GEM Tools under the GNU Affero Public License.
