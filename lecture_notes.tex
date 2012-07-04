@@ -1,9 +1,5 @@
 \documentclass[11pt,a4paper,headings=small,dvips]{scrbook}
-
 \input{configuration.tex}
-\setcounter{secnumdepth}{2}
-\setcounter{tocdepth}{2}
-
 \usepackage{xcolor}
 \usepackage{framed}
 
@@ -16,7 +12,6 @@
 \setlength{\parindent}{0.0mm}
 
 \begin{document}
-
 \setcounter{page}{1}
 
 \begin{titlepage}
@@ -29,11 +24,8 @@
  
 	\publishers{GEM Foundation, Pavia}
 \end{titlepage}
-
 \pagestyle{scrheadings}
 \maketitle
-\renewcommand*\thesection{\arabic{section}}
-\renewcommand*\thefigure{\thesection.\arabic{figure}}
 \clearpage
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -81,6 +73,7 @@ The objectives of this chapter are:
 \end{itemize}
 \end{myfancybox}
     \input{ssafrica_demo.tex}
+    \input{ssafrica_demo_solution.tex}
 \cleardoublepage
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -113,7 +106,7 @@ The objectives of this chapter are:
 \begin{myfancybox}
 The objectives of this chapter are:
 \begin{itemize}
-    \item start discussing about activities for creating the next Sub-Saharan 
+    \item to start discussing about activities for creating the next Sub-Saharan 
         Africa hazard model.
 \end{itemize}
 \end{myfancybox}
@@ -121,12 +114,24 @@ The objectives of this chapter are:
 \cleardoublepage
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
-\chapter{Risk demonstration}
+\chapter{Introduction to Scenario Risk Assessment}
 \begin{myfancybox}
 The objectives of this chapter are:
 \begin{itemize}
-    \item aa
-    \item bb
+    \item summarize the workflow for scenario risk assessment;
+    \item introduce the exposure and vulnerability input models.
+\end{itemize}
+\end{myfancybox}
+    \input{risk_scenario.tex}
+\cleardoublepage
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\chapter{Risk demonstration - Sub-Saharan Africa}
+\begin{myfancybox}
+The objectives of this chapter are:
+\begin{itemize}
+    \item introduce the demo on scenario risk assessment;
+    \item discuss the expected results.
 \end{itemize}
 \end{myfancybox}
     \input{risk_section.tex}

@@ -1,5 +1,3 @@
-\section{Risk Demonstration - Sub-Saharan Africa}
-
 \section{Description}
 A demonstrative test has been created in which economic losses due 
 to damage in residential buildings are estimated for the Grater Accra 
@@ -8,7 +6,25 @@ expected ground acceleration of $1 ms^{-2}$ for a probability of
 exceedance of 10\% in 50 years. The required OpenQuake input files
 have been compiled, and a brief description of each component is 
 provided below. 
-
+%
+\section{Rupture Model}
+In order to select a reasonable magnitude for an event in Ghana, 
+a set of past events were studied, and it was concluded that a
+magnitude of 6.5 ($M_W$) would be acceptable. Considering this
+magnitude and the Wells and Coppersmith relationship, a rupture
+length of approximately 30 km was estimated. The distribution of 
+faults in the territory around Ghana was evaluated a fault capable
+of triggering such event was selected (see Figure \ref{fig:rupture}). 
+For this demo, the ground motion prediction equation for Stable 
+Continent tectonic region \citep{toro2002} was chosen. 
+%
+\begin{figure}[htb]
+	\centering
+		\includegraphics{./figures/rupture.eps}
+	\caption{Rupture trace (in red) for a deterministic event in Accra}
+	\label{fig:rupture}
+\end{figure}
+%
 \section{Exposure Model}
 The Ghana Statistical Service [1] carries out Housing Census every
 10 years which provides sufficient information for the development 
@@ -17,8 +33,8 @@ this model created for this exercise was developed based on a simplified
 approach in which population spatial distribution is used to extrapolate 
 building value. In order to do so, it is fundamental to comprehend in
 which building typologies does the Ghanaian population reside. 
-
-According to Kishor et al. (2010), in urban areas, approximately 
+%
+According to \citet{jaiswal2008}, in urban areas, approximately 
 82\% of the population live in rubble stone masonry buildings and 
 17\% in mud wall houses. The remaining 1\% is distributed in wood
 and other informal types of construction. Applying these percentages
@@ -30,16 +46,15 @@ per unit of area for Ghana (taken from the Ghana Statistical Service),
 to derive economic value of each building typology (in EUR), 
 following the same evenly spaced grid. The outcome of this 
 exercise is illustrated in Figure \ref{fig:accra_exposure}.
-
+%
 \begin{figure}[htb]
 	\centering
 		\includegraphics[height=6.5cm, keepaspectratio=true]{./figures/exposure.eps}
 	\caption{Exposure Model for the Great Accra District}
 	\label{fig:accra_exposure}
 \end{figure}
-
+%
 \section{Vulnerability Model}
-
 Three building typologies were considered for this example: wooden 
 frame building (W), rubble stone masonry (RS) and mud walls buildings 
 (MW). There is very little information about the seismic vulnerability 
@@ -48,33 +63,53 @@ this demo, vulnerability from similar building typologies as well as
 damage data from the Cambridge Architectural Research database were 
 used, to derive the vulnerability model depicted in Figure 
 \ref{fig:vulnerability}. 
-
+%
 \begin{figure}[htb]
 	\centering
 		\includegraphics{./figures/vulnerability.eps}
 	\caption{Vulnerability Model for Building Typologies in Ghana}
 	\label{fig:vulnerability}
 \end{figure}
-
+%
 Due to the large uncertainty about the structural behaviour of these
 types of structures, a coefficient of variation of 30\% was assumed 
 for each loss ratio.
 
-\subsection{Rupture Model}
+\clearpage
+\section{Running the demo}
+The demonstration is run with the following command:
 
-In order to select a reasonable magnitude for an event in Ghana, 
-a set of past events were studied, and it was concluded that a
-magnitude of 6.5 ($M_W$) would be acceptable. Considering this
-magnitude and the Wells and Coppersmith relationship, a rupture
-length of approximately 30 km was estimated. The distribution of 
-faults in the territory around Ghana was evaluated a fault capable
-of triggering such event was selected (see Figure \ref{fig:rupture}). 
-For this demo, the ground motion prediction equation for Stable 
-Continent tectonic region (Toro et al, 2002) was chosen. 
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\scriptsize]
+   ~\$: openquake --config_file=./<USER_NAME>/Ghana/config.gem -output=xml
+\end{Verbatim}
+where \texttt{<USER\_NAME>} corresponds to the name of the user (e.g. jsmith).
 
+Three config files have been created with the following configuration:
+\begin{enumerate}
+\item config0.gem: economic losses considering only the median ground motion field
+\item config1.gem: economic losses considering 100 ground motion fields
+\item config2.gem: economic losses considering 100 ground motion fields and spatial correlation
+\end{enumerate}
+
+Once the calculations are finished a loss-map.xml will be created in 
+the computed output. For OATS users, to produce a loss map, users will find 
+in \texttt{/usr/openquake} a python script for plotting maps called 
+\texttt{map\_creator.py}:
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\scriptsize]
+   ~\$: python map_creator.py -i --config_file=./<USER_NAME>/Ghana/computed_output/loss_map.xml
+\end{Verbatim}
+
+The following commands are recommended in order to produce a better map:
+\begin{Verbatim}[frame=single, commandchars=\\\{\}, fontsize=\scriptsize]
+   ~\$: python map_creator.py -i --config_file=./<USER_NAME>/Ghana/computed_output/loss_map.xml 
+        -r 0.2 -min 100 -max 1000000
+\end{Verbatim}
+
+A map like Figure \ref{fig:Ghana_Output} is expected.
 \begin{figure}[htb]
 	\centering
-		\includegraphics{./figures/rupture.eps}
-	\caption{Rupture trace (in red) for a deterministic event in Accra}
-	\label{fig:rupture}
+    \includegraphics[width=\textwidth]{./figures/Ghana_risk_example_output.eps}
+        \caption{Loss map example for Accra (values in Euros)}
+	\label{fig:Ghana_Output}
 \end{figure}
+
